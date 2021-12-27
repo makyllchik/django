@@ -6,12 +6,12 @@
 </head>
 <body>
 <div>
-    <h2>{{ book.title }}</h2>
-    <p>{{ book.description}}</p>
-    <img src="{{book.image.url}}" alt="">
+    <h2>{{ object.title }}</h2>
+    <p>{{ object.description}}</p>
+    <img src="{{object.image.url}}" alt="">
     <br><br>
-    Created date:<p>{{ book.created_date }}</p>
-    Updated date:<p>{{ book.updated_date }}</p>
+    Created date:<p>{{ object.created_date }}</p>
+    Updated date:<p>{{ object.updated_date }}</p>
 </div>
 
 <div>
@@ -24,6 +24,8 @@
         </li>
         {% endfor %}
     </ul>
+    <a href="/books/{{object.id}}/update/">Update?</a>
+    <a href="/books/{{object.id}}/delete/">Delete?</a>
     <a href="/add-comment/">Add Comment</a>
 </div>
 </body>

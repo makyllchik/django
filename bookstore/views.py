@@ -1,40 +1,56 @@
 from django.http import Http404, HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from . import models, forms
+from django.views import generic
 
 
-def list_object(request):
-    book = models.Book.objects.all()
-    return render(request, 'list_object.html', {'book': book})
+class BookListView(generic.ListView):
+    template_name = 'list_object.html'
+    queryset = models.Book.objects.all()
+
+    def get_queryset(self):
+        return models.Book.objects.all()
 
 
-def detail(request, id):
-    try:
-        book = models.Book.objects.get(id=id)
-        try:
-            comment = models.Comment.objects.filter(post_id=id).order_by("created_date")
-        except models.Comment.DoesNotExist:
-            return HttpResponse("No comments")
+class BookDetailView(generic.DetailView):
+    template_name = "detail.html"
 
-    except models.Book.DoesNotExist:
-        raise Http404("Book does not Exist, fool")
-
-    return render(request, "detail.html", {"book": book, "book_comment": comment})
+    def get_object(self, **kwargs):
+        post_id = self.kwargs.get('id')
+        return get_object_or_404(models.Book, id=post_id)
 
 
-def add_book(request):
-    method = request.method
-    if method == "POST":
-        form = forms.BookForm(request.POST, request.FILES)
-        print(form.data)
-        models.Book.objects.create(title=form.data["title"],
-                                   description=form.data["description"],
-                                   image=form.data["image"])
-        return HttpResponse("Book created successfully")
-    else:
-        form = forms.BookForm()
+class BookCreateView(generic.CreateView):
+    template_name = 'add_book.html'
+    form_class = forms.BookForm
+    success_url = '/books/'
+    queryset = models.Book.objects.all()
 
-    return render(request, "add_book.html", {"form": form})
+    def form_valid(self, form):
+        print(form.cleaned_data)
+        return super().form_valid(form=form)
+
+
+class BookUpdateView(generic.UpdateView):
+    template_name = 'add_book.html'
+    form_class = forms.BookForm
+
+    def get_object(self, **kwargs):
+        post_id = self.kwargs.get('id')
+        return get_object_or_404(models.Book, id=post_id)
+
+    def form_valid(self, form):
+        print(form.cleaned_data)
+        return super().form_valid(form=form)
+
+
+class BookDeleteView(generic.DeleteView):
+    template_name = 'book_delete.html'
+    success_url = '/books/'
+
+    def get_object(self, **kwargs):
+        post_id = self.kwargs.get('id')
+        return get_object_or_404(models.Book, id=post_id)
 
 
 def add_comment(request):
