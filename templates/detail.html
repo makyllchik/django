@@ -6,11 +6,25 @@
 </head>
 <body>
 <div>
-  <h2>{{ book.title }}</h2>
-  <p>{{ book.description}}</p>
-  <img src="{{book.image.url}}" alt="">
-  <p>{{ book.created_date }}</p>
-  <p>{{ book.updated_date }}</p>
+    <h2>{{ book.title }}</h2>
+    <p>{{ book.description}}</p>
+    <img src="{{book.image.url}}" alt="">
+    <br><br>
+    Created date:<p>{{ book.created_date }}</p>
+    Updated date:<p>{{ book.updated_date }}</p>
+</div>
+
+<div>
+    <h2>Comments:</h2>
+    <ul>
+        {% for i in book_comment.all %}
+        <li>
+            <p> {{ i.text }}</p>
+            <p> {{ i.created_date }}</p>
+        </li>
+        {% endfor %}
+    </ul>
+    <a href="/add-comment/">Add Comment</a>
 </div>
 </body>
 </html>
